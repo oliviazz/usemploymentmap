@@ -1,0 +1,22 @@
+{
+  "name": "disruption-map",
+  "version": "1.0.0",
+  "description": "A map of future disruption in the U.S",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manninglucas/disruption-map.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/manninglucas/disruption-map/issues"
+  },
+  "homepage": "https://github.com/manninglucas/disruption-map#readme",
+  "dependencies": {
+    "react-d3-map-choropleth": "^0.5.1"
+  }
+}
