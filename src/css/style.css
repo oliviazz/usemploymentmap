@@ -1,0 +1,13 @@
+.states {
+  fill: none;
+  stroke: #fff;
+}
+
+.counties {
+    stroke: none;
+}
+
+.msa {
+    fill: none;
+    stroke: #ccc;
+}
