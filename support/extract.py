@@ -22,3 +22,27 @@ index counties by FIPS code (FIPS state code plus county code) and map that to c
 and map it to MSA code   
 
 """
+import csv, json, pprint
+
+
+"""
+creates a json file that maps MSA codes to counties
+"""
+def create_MSA_map():
+    msa_map = {}
+
+    with open('area_definitions_m2016.csv', encoding='latin_1') as csvfile:
+        reader = csv.DictReader(csvfile) 
+        for row in reader:
+            countyCode = row['FIPS code']+ row['County code']
+            msaCode = row['MSA code (including MSA divisions)'];
+            if msaCode in msa_map:
+                msa_map[msaCode].append(countyCode)
+            else:
+                msa_map[row['MSA code (including MSA divisions)']] = [countyCode]
+
+    with open('../data/us_msa.json', 'w') as jsonfile:
+       json.dump(msa_map, jsonfile) 
+
+if __name__ == "__main__":
+    create_MSA_map()

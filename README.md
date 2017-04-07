@@ -12,5 +12,7 @@ A map of future disruption in the U.S by major statistical area
 
 ### formula
 
-projeted change in employment*current employment*(projected change in wage)
-*current wage
+projeted change in employment * current employment * 
+(projected change in wage) * current wage
+
+1. 

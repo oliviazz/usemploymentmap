@@ -1,13 +1,25 @@
-.states {
-  fill: none;
-  stroke: #fff;
-}
-
 .counties {
-    stroke: none;
+  stroke: #ccc;
+  fill: none;
 }
 
 .msa {
+  stroke: #bbb;
+  fill: none;
+  pointer-events: all;
+
+}
+
+.states {
+    stroke-width: 3px;
+    stroke: #000;
     fill: none;
-    stroke: #ccc;
+}
+.msa-boundary {
+    stroke-width: 1px;
+}
+
+.msa-boundary:hover {
+    fill: rgba(100, 100, 100, 0.5);
+    stroke-width: 2px;
 }
