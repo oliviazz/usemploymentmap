@@ -22,8 +22,7 @@ index counties by FIPS code (FIPS state code plus county code) and map that to c
 and map it to MSA code   
 
 """
-import csv, json, pprint
-
+import csv, json, xlrd
 
 """
 creates a json file that maps MSA codes to counties
@@ -44,5 +43,77 @@ def create_MSA_map():
     with open('../data/us_msa.json', 'w') as jsonfile:
        json.dump(msa_map, jsonfile) 
 
+def create_disruption_index():
+    occupation_projections = {}
+    disruption_index = {}
+    employment_totals = {}
+
+    book = xlrd.open_workbook("occupation.XLSX")
+    sheet = book.sheet_by_index(2)
+
+    for i in range(4, sheet.nrows):
+        code = sheet.cell_value(i, 1)
+        percentChange = sheet.cell_value(i, 8)
+        occupation_projections[code] = percentChange
+
+    book = xlrd.open_workbook("MSA_M2016_dl.xlsx")
+    sheet = book.sheet_by_index(0)
+
+    for i in range(1, sheet.nrows):
+        msa = sheet.cell_value(i, 1)
+        code = sheet.cell_value(i, 3)
+        tot_emp = sheet.cell_value(i, 6)
+
+        if code not in occupation_projections:
+            continue
+
+        if tot_emp == "**" or tot_emp == "*" or tot_emp == "***":
+            tot_emp = 0
+
+        if code == "00-0000" and msa not in employment_totals:
+            employment_totals[msa] = int(tot_emp)
+            continue
+
+        if msa in disruption_index:
+            disruption_index[msa] += abs((tot_emp /  int(employment_totals[msa]))*int(occupation_projections[code]))
+        else:
+            disruption_index[msa] = abs(tot_emp / int(employment_totals[msa])*int(occupation_projections[code]))
+
+
+    book = xlrd.open_workbook("BOS_M2016_dl.xlsx")
+    sheet = book.sheet_by_index(0)
+
+    for i in range(1, sheet.nrows):
+        msa = sheet.cell_value(i, 1)
+        code = sheet.cell_value(i, 3)
+        tot_emp = sheet.cell_value(i, 6)
+
+        if code not in occupation_projections:
+            continue
+
+        if tot_emp == "**" or tot_emp == "*" or tot_emp == "***":
+            tot_emp = 0
+
+        if code == "00-0000" and msa not in employment_totals:
+            employment_totals[msa] = int(tot_emp)
+            continue
+
+        if msa in disruption_index:
+            disruption_index[msa] += (tot_emp /  int(employment_totals[msa]))*int(occupation_projections[code])
+        else:
+            disruption_index[msa] = tot_emp / int(employment_totals[msa])*int(occupation_projections[code])
+
+
+    for msa in disruption_index:
+        disruption_index[msa] /= len(occupation_projections) 
+
+    with open('../data/disruption.csv', 'w') as outfile:
+        writer = csv.DictWriter(outfile, fieldnames=['area','disruption'])  
+        writer.writeheader()
+        for area in disruption_index:
+            writer.writerow({'area' : area, 'disruption' : disruption_index[area]})
+
+
+
 if __name__ == "__main__":
-    create_MSA_map()
+    create_disruption_index()
