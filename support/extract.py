@@ -46,7 +46,8 @@ def create_MSA_map():
 def create_disruption_index():
     occupation_projections = {}
     disruption_index = {}
-    employment_totals = {}
+    employment_by_MSA = {}
+    opportunity_index = {}
 
     book = xlrd.open_workbook("occupation.XLSX")
     sheet = book.sheet_by_index(2)
@@ -62,22 +63,31 @@ def create_disruption_index():
     for i in range(1, sheet.nrows):
         msa = sheet.cell_value(i, 1)
         code = sheet.cell_value(i, 3)
-        tot_emp = sheet.cell_value(i, 6)
+        emp_in_sector = sheet.cell_value(i, 6)
 
         if code not in occupation_projections:
             continue
 
-        if tot_emp == "**" or tot_emp == "*" or tot_emp == "***":
-            tot_emp = 0
+        if emp_in_sector == "**" or emp_in_sector == "*" or emp_in_sector == "***":
+            emp_in_sector = 0
 
-        if code == "00-0000" and msa not in employment_totals:
-            employment_totals[msa] = int(tot_emp)
+        #  00 0000 is the for the total for that MSA
+        if code == "00-0000" and msa not in employment_by_MSA:
+            employment_by_MSA[msa] = int(emp_in_sector)
             continue
 
         if msa in disruption_index:
-            disruption_index[msa] += abs((tot_emp /  int(employment_totals[msa]))*int(occupation_projections[code]))
+            if float(occupation_projections[code]) < 0:
+                disruption_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
+            else:
+                opportunity_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
         else:
-            disruption_index[msa] = abs(tot_emp / int(employment_totals[msa])*int(occupation_projections[code]))
+            if float(occupation_projections[code]) < 0:
+                disruption_index[msa] = abs(emp_in_sector*float(occupation_projections[code]))
+                opportunity_index[msa] = 0
+            else:
+                opportunity_index[msa] = abs(emp_in_sector*float(occupation_projections[code]))
+                disruption_index[msa] = 0
 
 
     book = xlrd.open_workbook("BOS_M2016_dl.xlsx")
@@ -86,26 +96,35 @@ def create_disruption_index():
     for i in range(1, sheet.nrows):
         msa = sheet.cell_value(i, 1)
         code = sheet.cell_value(i, 3)
-        tot_emp = sheet.cell_value(i, 6)
+        emp_in_sector = sheet.cell_value(i, 6)
 
         if code not in occupation_projections:
             continue
 
-        if tot_emp == "**" or tot_emp == "*" or tot_emp == "***":
-            tot_emp = 0
+        if emp_in_sector == "**" or emp_in_sector == "*" or emp_in_sector == "***":
+            emp_in_sector = 0
 
-        if code == "00-0000" and msa not in employment_totals:
-            employment_totals[msa] = int(tot_emp)
+        #  00 0000 is the for the total for that MSA
+        if code == "00-0000" and msa not in employment_by_MSA:
+            employment_by_MSA[msa] = int(emp_in_sector)
             continue
 
         if msa in disruption_index:
-            disruption_index[msa] += (tot_emp /  int(employment_totals[msa]))*int(occupation_projections[code])
+            if float(occupation_projections[code]) < 0:
+                disruption_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
+            else:
+                opportunity_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
         else:
-            disruption_index[msa] = tot_emp / int(employment_totals[msa])*int(occupation_projections[code])
-
+            if float(occupation_projections[code]) < 0:
+                disruption_index[msa] = abs(emp_in_sector*float(occupation_projections[code]))
+                opportunity_index[msa] = 0
+            else:
+                opportunity_index[msa] = abs(emp_in_sector*float(occupation_projections[code]))
+                disruption_index[msa] = 0
 
     for msa in disruption_index:
-        disruption_index[msa] /= len(occupation_projections) 
+        disruption_index[msa] /= employment_by_MSA[msa]
+        opportunity_index[msa] /= employment_by_MSA[msa]
 
     with open('../data/disruption.csv', 'w') as outfile:
         writer = csv.DictWriter(outfile, fieldnames=['area','disruption'])  
@@ -113,7 +132,11 @@ def create_disruption_index():
         for area in disruption_index:
             writer.writerow({'area' : area, 'disruption' : disruption_index[area]})
 
-
+    with open('../data/opportunity.csv', 'w') as outfile:
+        writer = csv.DictWriter(outfile, fieldnames=['area','opportunity'])  
+        writer.writeheader()
+        for area in disruption_index:
+            writer.writerow({'area' : area, 'opportunity' : opportunity_index[area]})
 
 if __name__ == "__main__":
     create_disruption_index()

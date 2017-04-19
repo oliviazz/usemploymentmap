@@ -16,3 +16,12 @@ projeted change in employment * current employment *
 (projected change in wage) * current wage
 
 1. 
+
+### Screen shots
+
+Disruption Index:
+![di](/img/betteropportunityindex.png)
+
+
+Opportunity Index:
+![oi](/img/disruptionindex.png)
