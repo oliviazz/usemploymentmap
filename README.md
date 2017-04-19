@@ -20,8 +20,8 @@ projeted change in employment * current employment *
 ### Screen shots
 
 Disruption Index:
-![di](/img/betteropportunityindex.png)
+![di](/img/betteropportunityindex.PNG)
 
 
 Opportunity Index:
-![oi](/img/disruptionindex.png)
+![oi](/img/disruptionindex.PNG)
