@@ -15,7 +15,19 @@ A map of future disruption in the U.S by major statistical area
 projeted change in employment * current employment * 
 (projected change in wage) * current wage
 
-1. 
+### How to run
+
+1. Go into project directory
+2. start a local server with
+```
+python -m http.server
+```
+3.  View in browser by going to localhost:8000
+
+#### To regenerate data
+
+1. modify extract.py as necessary
+2. run extract.py
 
 ### Screen shots
 
