@@ -21,9 +21,13 @@ var g = svg.append("g")
 
 d3.queue()
     .defer(d3.json, "https://d3js.org/us-10m.v1.json")
-    .defer(d3.json, "../data/us_msa.json")
-    .defer(d3.csv, "../data/disruption.csv", function (d) { disruption.set(d.area, d.disruption); })
-    .defer(d3.csv, "../data/opportunity.csv", function (d) { opportunity.set(d.area, d.opportunity); })
+    // ! Note: had to change it bc of the way git packages my folders
+    // .defer(d3.json, "../data/us_msa.json")
+    // .defer(d3.csv, "../data/disruption.csv", function (d) { disruption.set(d.area, d.disruption); })
+    // .defer(d3.csv, "../data/opportunity.csv", function (d) { opportunity.set(d.area, d.opportunity); })
+    .defer(d3.json, "../disruption-map/data/us_msa.json")
+    .defer(d3.csv, "../disruption-map/data/disruption.csv", function (d) { disruption.set(d.area, d.disruption); })
+    .defer(d3.csv, "../disruption-map/data/opportunity.csv", function (d) { opportunity.set(d.area, d.opportunity); })
     .await(ready);
 
 function fillColor(msaCode, msamap, scale) {
