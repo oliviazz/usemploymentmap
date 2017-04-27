@@ -11,7 +11,6 @@ var curmap = disruption;
 var path = d3.geoPath();
 var opp_toggle = true;
 
-
 var x = d3.scaleLinear()
     .domain([1, 10])
     .rangeRound([600, 860]);
@@ -31,18 +30,18 @@ var colorpaths, msaMap, us_copy;
 // .defer(d3.json, "../data/us_msa.json")
 d3.queue()
     .defer(d3.json, "https://d3js.org/us-10m.v1.json")
-    .defer(d3.json, "../disruption-map/data/us_msa.json")
+    .defer(d3.json, "../data/us_msa.json")
   
-    .defer(d3.csv, "../disruption-map/data/opportunity.csv", 
+    .defer(d3.csv, "../data/opportunity.csv", 
         function (d) { opportunity.set(d.area, d.opportunity);})
-    .defer(d3.csv, "../disruption-map/data/disruption.csv", 
+    .defer(d3.csv, "../data/disruption.csv", 
         function (d) { disruption.set(d.area, d.disruption);})
     .await(ready);
 
 
 function fillColor(msaCode, msamap, scale) {
   if (msamap.get(parseInt(msaCode)) == undefined)
-     return d3.color("gray");
+     return d3.color("#aaaaaa");
 
   if (curmap == opportunity)
      return d3.interpolateYlGn(((msamap.get(parseInt(msaCode))-8) / scale)); 
@@ -93,8 +92,6 @@ function ready(error, us, msa) {
 
       // path.exit().remove()
 
-      ready()
-    
 
   }
 // Group for the toggle button
