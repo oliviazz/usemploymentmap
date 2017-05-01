@@ -3,6 +3,24 @@ A map of future disruption in the U.S by major statistical area
 
 ## WARNING: under heavy construction
 
+### Todo before 5/8 (!!!)
+#### In no particular order
+
+- Create a set of combined disruption and opportunity data
+- Add more overlay maps for comparison
+- Create charts that correlate disruption with other variables such as employment
+- List top 5 disrupted, top 5 opportunity counties
+- Create color scale
+- Color disruption based on standard deviations from the mean instead of an arbitrary linear scale
+- Have info about each MSA come up when it is clicked with top industries contributing to disruption in a pop up window
+- Create some short human interest narratives to go with correlations
+
+#### Technical Todo
+
+- Continue to clean up code (especially python extraction stuff)
+- Use bootstrap to organize the webpage and make it look nice
+- Make and style buttons with HTML and CSS, not with d3 in the js.
+
 ### Components 
 1. projected wage
 2. projected employment change
