@@ -2,16 +2,23 @@
 <head>
     <title> Future U.S disruption </title>
     <link rel="stylesheet" href="./src/css/style.css">
+   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
 </head>
 <body>
 <!-- Added https:// to beginning of this one -->
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 <script src="https://d3js.org/topojson.v2.min.js"></script>
+<div class='row justify-content-md-center'>
+    <h1 id="title"> Disruption </h1>
+</div>
+<div class='row justify-content-md-center'>
 <svg width="960" height="600"></svg>
+</div>
 <script src="./src/map.js"></script>
 
-<p>Disruption Value:</p> <p id = "info"></p>
+<p><span id='info-label'>Disruption</span> Value:</p> <p id ="info"></p>
+<button class='btn btn-primary' id="toggle" onclick="toggleMap()"> Toggle </button>
 </div>
 </body>
 </html>

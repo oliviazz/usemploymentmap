@@ -4,9 +4,9 @@
 // Types =====================================================
 
 var mapTypes =  {
-  DISRUPTION : 0,
-  OPPORTUNITY : 1,
-  COMBINED : 2
+  DISRUPTION : "Disruption",
+  OPPORTUNITY : "Opportunity",
+  COMBINED : "Combined"
 };
 
 // globals==================================================
@@ -23,37 +23,58 @@ var svg = d3.select("svg"),
 
 // Map Components ========================================================
 
-// Group for the toggle button
-var but_group = svg.append("g").attr("class", "toggle_button")
-    .on('click', function() {
-          if (currentMap == mapTypes.OPPORTUNITY)
-            currentMap = mapTypes.DISRUPTION;
-          else if (currentMap == mapTypes.DISRUPTION)
-            currentMap = mapTypes.OPPORTUNITY;
-          changeMap(currentMap);
-        }
-    )
-
-var button = but_group.append("rect")
-    .attr("class", "button").attr("width", 120).attr("height", 30)
-    .attr('x', 420) .attr('y', 10).attr("fill", '#87AFC7')
-   
-var label = but_group.append("text")
-    .text("Toggle View").attr("width", 120).attr("height", 30)
-    .attr('x', 440).attr('y', 30).style("fill", "#FFFFFF")
-    
+var div = d3.select("body").append("div")   
+    .attr("class", "tip")               
+    .style("visibility", "hidden");
 
 // Helpers======================================================
+
+function toggleMap() {
+  var label = d3.select("h1");
+  if (currentMap == mapTypes.OPPORTUNITY) {
+    label.text("Disruption");
+    currentMap = mapTypes.DISRUPTION;
+  } else if (currentMap == mapTypes.DISRUPTION) {
+    label.text("Combined");
+    currentMap = mapTypes.COMBINED;
+  } else if (currentMap == mapTypes.COMBINED) {
+    label.text("Opportunity");
+    currentMap = mapTypes.OPPORTUNITY;
+  }
+  changeMap(currentMap);
+}
+
+function getValueAtMSA(msaCode) {
+  switch (currentMap) {
+    case mapTypes.OPPORTUNITY:
+      return opportunity.get(parseInt(msaCode));
+      break;
+    case mapTypes.DISRUPTION:
+      return disruption.get(parseInt(msaCode));
+      break;
+    case mapTypes.COMBINED:
+      return combined.get(parseInt(msaCode));
+      break;
+    default:
+      break;
+  }
+}
 
 // Fills the msa with msaCode with a color based on the map
 function fillColor(msaCode, map) {
   if (opportunity.get(parseInt(msaCode)) == undefined)
      return d3.color("#aaaaaa");
 
-  if (map == mapTypes.OPPORTUNITY)
-     return d3.interpolateYlGn(((opportunity.get(parseInt(msaCode))-8) / 7)); 
-  else 
-     return d3.interpolateOrRd(((disruption.get(parseInt(msaCode))/2))); 
+  if (map == mapTypes.OPPORTUNITY) {
+    var x = d3.scaleLinear().domain([8.5, 17.5]).range([0, 1])
+    return d3.interpolateYlGn(((x(opportunity.get(parseInt(msaCode)))))); 
+  } else if (map == mapTypes.DISRUPTION) {
+    var x = d3.scaleLinear().domain([0, 3.5]).range([0, 1])
+    return d3.interpolateOrRd((x(disruption.get(parseInt(msaCode))))); 
+  } else if (map == mapTypes.COMBINED) {
+    var x = d3.scaleLinear().domain([5.5, 17]).range([0, 1])
+    return d3.interpolateBlues((x(combined.get(parseInt(msaCode))))); 
+  }
 }
 
 // switches the current map displayed to the one provided
@@ -80,6 +101,18 @@ function createBoundaries(us, msa) {
       .attr("id", msaCode)
       .attr("class", "msa-boundary")
       .attr("d", path)
+      .on("mouseover", function(d) {
+        div.html(currentMap+"<br/>"+getValueAtMSA(msaCode))
+           .style("left", (d3.event.pageX+20) + "px")     
+           .style("top", (d3.event.pageY - 28) + "px")
+           .transition().duration(200)
+           .style("visibility", "visible");
+      })
+      .on("mouseout", function(d) {
+        div.style("visibility", "hidden")
+           .transition().duration(200)
+           .style("visibility", "visible");
+      })
   });
 }
 
@@ -93,6 +126,8 @@ d3.queue()
       function (d) { opportunity.set(d.area, d.opportunity);})
   .defer(d3.csv, "../data/disruption.csv", 
       function (d) { disruption.set(d.area, d.disruption);})
+  .defer(d3.csv, "../data/combined.csv",
+      function (d) { combined.set(d.area, d.combined);})
   .await(function(error, us, msa) {
     if (error) throw error;
     createBoundaries(us, msa);
@@ -118,11 +153,3 @@ d3.queue()
    //    .data(topojson.feature(us, us.objects.counties).features)
    //    .enter().append("path")
    //    .attr("d", path)
-    
-    
-
- 
-
-  
-
-
