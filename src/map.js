@@ -102,16 +102,13 @@ function createBoundaries(us, msa) {
       .attr("class", "msa-boundary")
       .attr("d", path)
       .on("mouseover", function(d) {
-        div.html(currentMap+"<br/>"+getValueAtMSA(msaCode))
+        div.html("<strong>"+currentMap+"</strong>"+"<br/>"+getValueAtMSA(msaCode))
            .style("left", (d3.event.pageX+20) + "px")     
            .style("top", (d3.event.pageY - 28) + "px")
-           .transition().duration(200)
            .style("visibility", "visible");
       })
       .on("mouseout", function(d) {
         div.style("visibility", "hidden")
-           .transition().duration(200)
-           .style("visibility", "visible");
       })
   });
 }
