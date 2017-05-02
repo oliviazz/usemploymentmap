@@ -74,7 +74,7 @@ def create_tables():
 
         #  00 0000 is the for the total for that MSA
         if code == "00-0000" and msa not in employment_by_MSA:
-            employment_by_MSA[msa] = int(emp_in_sector)
+            employment_by_MSA[msa] = float(emp_in_sector)
             continue
 
         if msa in disruption_index:
@@ -109,7 +109,7 @@ def create_tables():
 
         #  00 0000 is the for the total for that MSA
         if code == "00-0000" and msa not in employment_by_MSA:
-            employment_by_MSA[msa] = int(emp_in_sector)
+            employment_by_MSA[msa] = float(emp_in_sector)
             continue
 
         if msa in disruption_index:
@@ -148,7 +148,7 @@ def create_tables():
         writer = csv.DictWriter(outfile, fieldnames=['area','combined'])  
         writer.writeheader()
         for area in disruption_index:
-            writer.writerow({'area' : area, 'combined' : opportunity_index[area]})
+            writer.writerow({'area' : area, 'combined' : combined_index[area]})
 
 if __name__ == "__main__":
     create_tables()
