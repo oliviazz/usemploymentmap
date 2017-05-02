@@ -43,11 +43,12 @@ def create_MSA_map():
     with open('../data/us_msa.json', 'w') as jsonfile:
        json.dump(msa_map, jsonfile) 
 
-def create_disruption_index():
+def create_tables():
     occupation_projections = {}
     disruption_index = {}
     employment_by_MSA = {}
     opportunity_index = {}
+    combined_index = {}
 
     book = xlrd.open_workbook("occupation.XLSX")
     sheet = book.sheet_by_index(2)
@@ -77,11 +78,13 @@ def create_disruption_index():
             continue
 
         if msa in disruption_index:
+            combined_index[msa] += emp_in_sector*float(occupation_projections[code]) 
             if float(occupation_projections[code]) < 0:
                 disruption_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
             else:
                 opportunity_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
         else:
+            combined_index[msa] = emp_in_sector*float(occupation_projections[code]) 
             if float(occupation_projections[code]) < 0:
                 disruption_index[msa] = abs(emp_in_sector*float(occupation_projections[code]))
                 opportunity_index[msa] = 0
@@ -110,11 +113,13 @@ def create_disruption_index():
             continue
 
         if msa in disruption_index:
+            combined_index[msa] += emp_in_sector*float(occupation_projections[code]) 
             if float(occupation_projections[code]) < 0:
                 disruption_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
             else:
                 opportunity_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
         else:
+            combined_index[msa] = emp_in_sector*float(occupation_projections[code]) 
             if float(occupation_projections[code]) < 0:
                 disruption_index[msa] = abs(emp_in_sector*float(occupation_projections[code]))
                 opportunity_index[msa] = 0
@@ -125,6 +130,7 @@ def create_disruption_index():
     for msa in disruption_index:
         disruption_index[msa] /= employment_by_MSA[msa]
         opportunity_index[msa] /= employment_by_MSA[msa]
+        combined_index[msa] /= employment_by_MSA[msa]
 
     with open('../data/disruption.csv', 'w') as outfile:
         writer = csv.DictWriter(outfile, fieldnames=['area','disruption'])  
@@ -138,5 +144,11 @@ def create_disruption_index():
         for area in disruption_index:
             writer.writerow({'area' : area, 'opportunity' : opportunity_index[area]})
 
+    with open('../data/combined.csv', 'w') as outfile:
+        writer = csv.DictWriter(outfile, fieldnames=['area','combined'])  
+        writer.writeheader()
+        for area in disruption_index:
+            writer.writerow({'area' : area, 'combined' : opportunity_index[area]})
+
 if __name__ == "__main__":
-    create_disruption_index()
+    create_tables()
