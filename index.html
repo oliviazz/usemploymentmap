@@ -6,6 +6,7 @@
    	<script src="https://d3js.org/d3.v4.min.js"></script>
 	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 	<script src="https://d3js.org/topojson.v2.min.js"></script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.12/d3.min.js" charset="utf-8"></script> -->
 </head>
 
 <body>
@@ -19,10 +20,24 @@
     <h6 class="card-subtitle mb-2 text-muted" align = "center">---------</h6>
     <p class="card-text" align = "center">Graphic display of US employment Data</p>
     <div class='row justify-content-md-center'> 
-    	<button class='btn btn-info' id="buttonlbl" onclick="toggleMap()"> Show Opportunity </button>
+    	<div class="btn-group">
+  			<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+   			 Change Map View <span class="caret"></span>
+  			</button>
+  			<ul class="dropdown-menu">
+    			<li><a id = "opportunity"  onclick="toggleMap('opportunity')" href = #>Show Opportunity</a></li>
+    			<li><a id = "disruption" onclick="toggleMap('disruption')" href="#">Show Disruption</a></li>
+    			<li><a id = "combined"  onclick="toggleMap('combined')" href="#">Show Combined</a></li>
+
+    		
+ 			 </ul>
+</div>
     	<button class='btn btn-primary'  > Show Jobs  </button>
-    	<button class='btn btn-primary' > Show By Industry </button>
-    </div>
+    	<button class='btn btn-primary' > Show By Industry </button> <br><br>
+    
+    </div><br>
+    <p  align = "center"> Industry of Largest Change   </p>
+    <p  id = "jobgroup" align = "center"> </p>
   </div>
 </div>
 	  
@@ -36,9 +51,11 @@
 
 	
 <div class='row justify-content-md-center'>
-<svg width="960" height="600"></svg>
+	<svg width="960" height="600"></svg>
 </div>
-
+<div class='row justify-content-md-center'>
+	<svg id="legend-svg"></svg>
+</div>
  <footer class="footer">
       <div class="container">
       <br><br><br>

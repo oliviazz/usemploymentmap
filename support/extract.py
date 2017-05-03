@@ -49,6 +49,7 @@ def create_tables():
     employment_by_MSA = {}
     opportunity_index = {}
     combined_index = {}
+    topjobchange = {}
 
     book = xlrd.open_workbook("occupation.XLSX")
     sheet = book.sheet_by_index(2)
@@ -78,6 +79,15 @@ def create_tables():
             continue
 
         if msa in disruption_index:
+            val = emp_in_sector*float(occupation_projections[code]);
+            if (msa in topjobchange and val > topjobchange[msa][0]):
+                tempValue = (val, sheet.cell_value(i, 4));
+                topjobchange[msa] = tempValue;
+
+            if (not msa in topjobchange):
+                tempValue = (val, sheet.cell_value(i, 4));
+                topjobchange[msa] = tempValue;
+
             combined_index[msa] += emp_in_sector*float(occupation_projections[code]) 
             if float(occupation_projections[code]) < 0:
                 disruption_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
@@ -145,10 +155,13 @@ def create_tables():
             writer.writerow({'area' : area, 'opportunity' : opportunity_index[area]})
 
     with open('../data/combined.csv', 'w') as outfile:
-        writer = csv.DictWriter(outfile, fieldnames=['area','combined'])  
+        writer = csv.DictWriter(outfile, fieldnames=['area','combined', 'greatest_sector'])  
         writer.writeheader()
         for area in disruption_index:
-            writer.writerow({'area' : area, 'combined' : combined_index[area]})
+            if (area not in topjobchange):
+                writer.writerow({'area' : area, 'combined' : combined_index[area], 'greatest_sector' : "--"})
+            else:
+                writer.writerow({'area' : area, 'combined' : combined_index[area], 'greatest_sector' : topjobchange[area][1]})
 
 if __name__ == "__main__":
     create_tables()
