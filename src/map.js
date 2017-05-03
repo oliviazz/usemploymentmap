@@ -31,15 +31,21 @@ var div = d3.select("body").append("div")
 
 function toggleMap() {
   var label = d3.select("h1");
+  var btnlabel = d3.select("#buttonlbl");
   if (currentMap == mapTypes.OPPORTUNITY) {
     label.text("Disruption");
+    btnlabel.text("Show Combined Map");
     currentMap = mapTypes.DISRUPTION;
-  } else if (currentMap == mapTypes.DISRUPTION) {
+  } 
+  else if (currentMap == mapTypes.DISRUPTION) {
     label.text("Combined");
     currentMap = mapTypes.COMBINED;
-  } else if (currentMap == mapTypes.COMBINED) {
+    btnlabel.text("Show Opportunity Map");
+  } 
+  else if (currentMap == mapTypes.COMBINED) {
     label.text("Opportunity");
     currentMap = mapTypes.OPPORTUNITY;
+    btnlabel.text("Show Disruption Map");
   }
   changeMap(currentMap);
 }
