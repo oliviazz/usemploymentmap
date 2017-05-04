@@ -1,69 +1,63 @@
 <html>
 <head>
-    <title> Future U.S disruption </title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <link rel="stylesheet" href="./src/css/style.css">
-   	<script src="https://d3js.org/d3.v4.min.js"></script>
-	<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-	<script src="https://d3js.org/topojson.v2.min.js"></script>
-	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.12/d3.min.js" charset="utf-8"></script> -->
+  <title> Future U.S disruption </title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+  <link rel="stylesheet" href="./src/css/style.css">
+ 	<script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+  <script src="https://d3js.org/topojson.v2.min.js"></script>
 </head>
 
 <body>
-
-<!-- Added https:// to beginning of this one -->
-    <br>
-  
-	<div class="card">
-  <div class="card-block">
-    <h1 id = "title" class="card-title" align = "center">Disruption</h1>
-    <h6 class="card-subtitle mb-2 text-muted" align = "center">---------</h6>
-    <p class="card-text" align = "center">Graphic display of US employment Data</p>
-    <div class='row justify-content-md-center'> 
-    	<div class="btn-group">
-  			<button type="button" class="btn btn-info dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-   			 Change Map View <span class="caret"></span>
-  			</button>
-  			<ul class="dropdown-menu">
-    			<li><a id = "opportunity"  onclick="toggleMap('opportunity')" href = #>Show Opportunity</a></li>
-    			<li><a id = "disruption" onclick="toggleMap('disruption')" href="#">Show Disruption</a></li>
-    			<li><a id = "combined"  onclick="toggleMap('combined')" href="#">Show Combined</a></li>
-
-    		
- 			 </ul>
-</div>
-    	<button class='btn btn-primary'  > Show Jobs  </button>
-    	<button class='btn btn-primary' > Show By Industry </button> <br><br>
-    
-    </div><br>
-    <p  align = "center"> Industry of Largest Change   </p>
-    <p  id = "jobgroup" align = "center"> </p>
+<!-- Please keep HTML organized/clean -->
+<!-- 2 spaces per tab. Any tags within tags should be indented
+     for attributes, the order is class, id, other -->
+<!-- Use a special separator div to create separation lines -->
+<!-- Use grid row/column organization to maintain grid -->
+<div class="container" id="content">
+  <div class='row justify-content-md-center align-items-center'>
+    <h1 class='display-1' id='title'>Disruption</h1>
   </div>
-</div>
-	  
 
-     </div>
+  <div class='separator mx-auto mt-3 mb-3'></div>
+
+  <div class='row justify-content-md-center'> 
+    <div class="btn-group">
+      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Change Map View <span class="caret"></span>
+      </button>
+        <ul class="dropdown-menu">
+          <li><a id = "opportunity"  onclick="toggleMap('Opportunity')" href = #>Show Opportunity</a></li>
+          <li><a id = "disruption" onclick="toggleMap('Disruption')" href="#">Show Disruption</a></li>
+          <li><a id = "combined"  onclick="toggleMap('Combined')" href="#">Show Combined</a></li>
+        </ul>
+    </div>
+    <button class='btn btn-primary'> Show Jobs </button>
+    <button class='btn btn-primary'> Show By Industry </button>
   </div>
-</div>
-</div>
-	
 
+  <div class="separator mx-auto mt-3 mb-3"></div>
 
-	
-<div class='row justify-content-md-center'>
-	<svg width="960" height="600"></svg>
-</div>
-<div class='row justify-content-md-center'>
-	<svg id="legend-svg"></svg>
-</div>
- <footer class="footer">
-      <div class="container">
-      <br><br><br>
-        <p class="text-muted">Lucas Manning and Olivia Zhang || FRS 178, 2017</p>
+  <div class='row align-items-start'>
+    <div class='col-md-8'>
+    	<svg width="100%" height="75%" viewBox="0 70 960 600" preserveAspectRatio="XMidYMid meet"></svg>
+    </div>
+
+    <div class='card col-md-4 mt-5'>
+      <div class='card-block'>
+        <p> Industry of Largest Change </p>
+        <p id="jobgroup"></p>
       </div>
-    </footer>
+    </div>
+  </div>
 
+  <footer class="footer">
+    <div class="row justify-content-start">
+      <div class="text-muted">Lucas Manning and Olivia Zhang // FRS 178, 2017</div>
+    </div>
+  </footer>
 </div>
+
 <script src="./src/map.js"></script>
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>

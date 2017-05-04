@@ -34,6 +34,11 @@
   border: 0px;      
   pointer-events: none;         
   display: block;
-  border-color: #aaaaaa;
-  border-width: 2px;
+  border: 2px solid gray;
+}
+
+.separator {
+  min-height: 1px;
+  border: 1px solid lightgray;
+  max-width: 75%;
 }

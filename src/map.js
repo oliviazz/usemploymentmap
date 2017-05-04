@@ -118,41 +118,23 @@ var div = d3.select("body").append("div")
 //     }
 // Helpers======================================================
 
-function toggleMap(variable) {
+function toggleMap(map) {
 
-  switch(variable) {
-    case "opportunity":
+  switch(map) {
+    case "Opportunity":
         currentMap = mapTypes.OPPORTUNITY;
         break;
-    case "disruption":
+    case "Disruption":
         currentMap = mapTypes.DISRUPTION;
         break;
-    case "combined":
+    case "Combined":
         currentMap = mapTypes.COMBINED;
-
+        break;
     default:
-
+        break;
   }
   var label = d3.select("h1");
- // var btnlabel = d3.select("#buttonlbl");
-  console.log(variable);
-  console.log("hi");
-  // if (currentMap == mapTypes.OPPORTUNITY) {
-  if(currentMap == mapTypes.OPPORTUNITY) {
-    label.text("Opportunity");
-   // btnlabel.text("Show Combined Map");
-    //currentMap = mapTypes.DISRUPTION;
-   } 
-  else if (currentMap == mapTypes.DISRUPTION) {
-    label.text("Disruption");
-    //currentMap = mapTypes.COMBINED;
-    //btnlabel.text("Show Opportunity Map");
-  } 
-  else if (currentMap == mapTypes.COMBINED) {
-    label.text("Combined");
-    //currentMap = mapTypes.OPPORTUNITY;
-   // btnlabel.text("Show Disruption Map");
-  }
+  label.text(currentMap)
   changeMap(currentMap);
 }
 
@@ -173,7 +155,7 @@ function getValueAtMSA(msaCode) {
 }
 
 function gettopjob(msaCode) {
-      return topjobchange.get(parseInt(msaCode));
+    return topjobchange.get(parseInt(msaCode));
 }
 
 // Fills the msa with msaCode with a color based on the map
@@ -222,10 +204,6 @@ function createBoundaries(us, msa) {
            .style("left", (d3.event.pageX+20) + "px")     
            .style("top", (d3.event.pageY - 28) + "px")
            .style("visibility", "visible");
-           if (gettopjob(msaCode) == "--")
-               d3.select('#jobgroup').text("No Data");
-           else
-               d3.select('#jobgroup').text( " Main Portion of Change: " + gettopjob(msaCode)+ " [MSA: " + msaCode + "]");
       })
       .on("mouseout", function(d) {
         div.style("visibility", "hidden")
