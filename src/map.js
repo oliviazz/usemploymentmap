@@ -20,7 +20,6 @@ var path = d3.geoPath();
 var disruption = d3.map();
 var opportunity = d3.map();
 var combined = d3.map();
-var topjobchange = d3.map();
 var currentMap = mapTypes.DISRUPTION;
 
 var svg = d3.select("svg"),
@@ -133,45 +132,59 @@ function toggleMap(map) {
     default:
         break;
   }
+
   var label = d3.select("h1");
+  d3.select("#contributor").text(currentMap);
+  d3.select("#jobgroup").text("");
   label.text(currentMap)
+
   changeMap(currentMap);
 }
 
 function getValueAtMSA(msaCode) {
+  if (opportunity.get(parseInt(msaCode)) == undefined)
+    return undefined;
   switch (currentMap) {
     case mapTypes.OPPORTUNITY:
-      return opportunity.get(parseInt(msaCode));
-      break;
+      return opportunity.get(parseInt(msaCode)).value;
     case mapTypes.DISRUPTION:
-      return disruption.get(parseInt(msaCode));
-      break;
+      return disruption.get(parseInt(msaCode)).value;
     case mapTypes.COMBINED:
-      return combined.get(parseInt(msaCode));
-      break;
+      return combined.get(parseInt(msaCode)).value;
     default:
       break;
   }
 }
 
 function gettopjob(msaCode) {
-    return topjobchange.get(parseInt(msaCode));
+  if (opportunity.get(parseInt(msaCode)) == undefined)
+    return undefined;
+  switch (currentMap) {
+    case mapTypes.OPPORTUNITY:
+      return opportunity.get(parseInt(msaCode)).greatest_sector;
+    case mapTypes.DISRUPTION:
+      return disruption.get(parseInt(msaCode)).greatest_sector;
+    case mapTypes.COMBINED:
+      return combined.get(parseInt(msaCode)).greatest_sector;
+    default:
+      break;
+  }
 }
 
 // Fills the msa with msaCode with a color based on the map
 function fillColor(msaCode, map) {
   if (opportunity.get(parseInt(msaCode)) == undefined)
-     return d3.color("#aaaaaa");
-
+     return d3.color("#ffffff");
+  var value = getValueAtMSA(msaCode);
   if (map == mapTypes.OPPORTUNITY) {
     var x = d3.scaleLinear().domain([8.5, 17.5]).range([0, 1])
-    return d3.interpolateYlGn(((x(opportunity.get(parseInt(msaCode)))))); 
+    return d3.interpolateYlGn(((x(value)))); 
   } else if (map == mapTypes.DISRUPTION) {
     var x = d3.scaleLinear().domain([0, 3.5]).range([0, 1])
-    return d3.interpolateOrRd((x(disruption.get(parseInt(msaCode))))); 
+    return d3.interpolateOrRd(((x(value))));
   } else if (map == mapTypes.COMBINED) {
     var x = d3.scaleLinear().domain([5.5, 17]).range([0, 1])
-    return d3.interpolateBlues((x(combined.get(parseInt(msaCode))))); 
+    return d3.interpolateBlues(((x(value))));
   }
 }
 
@@ -200,7 +213,13 @@ function createBoundaries(us, msa) {
       .attr("class", "msa-boundary")
       .attr("d", path)
       .on("mouseover", function(d) {
-        div.html("<strong>"+currentMap+"</strong>"+"<br/>"+getValueAtMSA(msaCode)+ "<br/>")
+        var text;
+        if (getValueAtMSA(msaCode) == undefined) {
+          text = "No data";
+        } else {
+          text = parseFloat(getValueAtMSA(msaCode)).toFixed(4) + "%";
+        }
+        div.html("<strong>"+currentMap+"</strong>"+"<br/><span class='mb-1'>"+ text + "</span>")
            .style("left", (d3.event.pageX+20) + "px")     
            .style("top", (d3.event.pageY - 28) + "px")
            .style("visibility", "visible");
@@ -209,7 +228,7 @@ function createBoundaries(us, msa) {
         div.style("visibility", "hidden")
       })
       .on("click", function(d) {
-          d3.select('#jobgroup').text(" Main Portion of Change: " + gettopjob(msaCode) + "[MSA: " + msaCode + "]");
+          d3.select('#jobgroup').text(" Main Portion of Change: " + gettopjob(msaCode) + " [MSA: " + msaCode + "]");
 
       })
   });
@@ -222,12 +241,11 @@ d3.queue()
   .defer(d3.json, "https://d3js.org/us-10m.v1.json")
   .defer(d3.json, "../data/us_msa.json")
   .defer(d3.csv, "../data/opportunity.csv", 
-      function (d) { opportunity.set(d.area, d.opportunity);})
+      function (d) { opportunity.set(d.area, {"value" : d.opportunity, "greatest_sector" : d.greatest_sector});})
   .defer(d3.csv, "../data/disruption.csv", 
-      function (d) { disruption.set(d.area, d.disruption);})
+      function (d) { disruption.set(d.area, {"value" : d.disruption, "greatest_sector" : d.greatest_sector});})
   .defer(d3.csv, "../data/combined.csv",
-      function (d) { combined.set(d.area, d.combined);
-                      topjobchange.set(d.area, d.greatest_sector)})
+      function (d) { combined.set(d.area, {"value" : d.combined, "greatest_sector" : d.greatest_sector});})
   .await(function(error, us, msa) {
     if (error) throw error;
     createBoundaries(us, msa);
