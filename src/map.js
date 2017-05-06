@@ -23,6 +23,9 @@ var combined = d3.map();
 var topjobchange = d3.map();
 var currentMap = mapTypes.DISRUPTION;
 
+var allJobs =  d3.map();
+var totalJobs = []
+
 var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
@@ -209,7 +212,9 @@ function createBoundaries(us, msa) {
         div.style("visibility", "hidden")
       })
       .on("click", function(d) {
-          d3.select('#jobgroup').text(" Main Portion of Change: " + gettopjob(msaCode) + "[MSA: " + msaCode + "]");
+          d3.select('#jobgroup').text(" Main Portion of Change: " + gettopjob(msaCode));
+          d3.select('#msaCode').text(" MSA: " + msaCode);
+          d3.select('#msaCode').text(" MSA: " + msaCode);
 
       })
   });
@@ -228,11 +233,26 @@ d3.queue()
   .defer(d3.csv, "../data/combined.csv",
       function (d) { combined.set(d.area, d.combined);
                       topjobchange.set(d.area, d.greatest_sector)})
+  .defer(d3.csv, "../data/job_employments.csv",
+      function (d) { 
+           console.log(d);
+
+           allJobs.set(d.MSA, d.combined);
+         })
   .await(function(error, us, msa) {
     if (error) throw error;
     createBoundaries(us, msa);
     changeMap(currentMap);
   });
+ 
+ for (msa in combined.set()){
+  
+  console.log(msa)
+  
+}
+
+
+ 
 
    //---------------------------
    // Append Groups for counties
