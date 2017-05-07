@@ -16,9 +16,9 @@ class Choropleth {
     if (msa == "") return;
     this.data.set(msa, values);
     if (parseFloat(values.value) > this.max) {
-      this.max = values.value;
+      this.max = parseFloat(values.value);
     } else if (parseFloat(values.value) < this.min) {
-      this.min = values.value;
+      this.min = parseFloat(values.value);
      }
   }
 
@@ -48,6 +48,43 @@ class Choropleth {
       return undefined;
     }
   }
+
+  generateKey() {
+    let scale = d3.scaleLinear().domain([this.min, this.max]).rangeRound([600, 900])    
+    let interval = (this.max - this.min) / 5;
+    let ranges = [];
+    let count = 0;
+    for (let i = this.min; count < 5; i += interval) {
+      ranges[count++] = i.toFixed(2);
+    }
+    let color = this.colorScale;
+    let linearScale = this.linearScale;
+    let width = scale(this.min + (ranges[1] - ranges[0])) - 600;
+    let self = this;
+    key.selectAll("*").remove();
+    key.selectAll("rect")
+       .data(ranges)
+       .enter().append("rect")
+       .attr("height", 8)
+       .attr("x", function(d) {  return scale(d); })
+       .attr("width", width)
+       .attr("fill", function(d) { return color(linearScale(d)); });
+
+    key.append("text")
+      .attr("class", "caption")
+      .attr("x", scale.range()[0])
+      .attr("y", -6)
+      .attr("fill", "#000")
+      .attr("text-anchor", "start")
+      .attr("font-weight", "bold")
+      .text(self.name +" rate");
+    key.call(d3.axisBottom(scale)
+      .tickSize(13)
+      .tickFormat(function(x, i) { return i ? x : x + "%"; })
+      .tickValues(ranges))
+    .select(".domain")
+    .remove();
+  }
 }
 
 // globals==================================================
@@ -65,57 +102,18 @@ var svg = d3.select("svg"),
     height = +svg.attr("height");
 
 // Map Components ========================================================
-
 var div = d3.select("body").append("div")   
     .attr("class", "tip")               
 //TODO make this responsive
 var key = svg.append("g")
              .attr("class", "key")
-             .attr("transform", "translate(0,40)");
-
-var color = d3.scaleThreshold()
-    .domain(d3.range(0, 5))
-    .range(d3.schemeOrRd[6]);
-
-var x = d3.scaleLinear()
-    .domain([0, 5])
-    .rangeRound([600, 860]);
-
-key.selectAll("rect")
-  .data(color.range().map(function(d) {
-      d = color.invertExtent(d);
-      if (d[0] == null) d[0] = x.domain()[0];
-      if (d[1] == null) d[1] = x.domain()[1];
-      return d;
-    }))
-  .enter().append("rect")
-    .attr("height", 8)
-    .attr("x", function(d) { return x(d[0]); })
-    .attr("width", function(d) { return x(d[1]) - x(d[0]); })
-    .attr("fill", function(d) { return color(d[0]); });
-
-
-key.append("text")
-    .attr("class", "caption")
-    .attr("x", x.range()[0])
-    .attr("y", -6)
-    .attr("fill", "#000")
-    .attr("text-anchor", "start")
-    .attr("font-weight", "bold")
-    .text("Disruption rate");
-
-key.call(d3.axisBottom(x)
-    .tickSize(13)
-    .tickFormat(function(x, i) { return i ? x : x + "%"; })
-    .tickValues(color.domain()))
-  .select(".domain")
-    .remove();
+             .attr("transform", "translate(0,0)");
 // Helpers======================================================
 
 function toggleMap(mapName) {
   switch(mapName) {
     case "Opportunity":
-        map = maps.OPPORTUNITY;
+        currentMap = maps.OPPORTUNITY;
         break;
     case "Disruption":
         currentMap = maps.DISRUPTION;
@@ -131,6 +129,8 @@ function toggleMap(mapName) {
   d3.select("#contributor").text(currentMap.name);
   d3.select("#jobgroup").text("");
   label.text(currentMap.name)
+
+  currentMap.generateKey();
 
   fillMap();
 }
@@ -160,13 +160,11 @@ function createBoundaries(us, msa) {
       .attr("class", "msa-boundary")
       .attr("d", path)
       .on("mouseover", function(d) {
-        
         var text;
-        if (currentMap.value(parseInt(msaCode)) == undefined) {
+        if (currentMap.value(parseInt(msaCode)) == undefined)
           text = "No Data";
-        } else {
+        else
           text = parseFloat(currentMap.value(parseInt(msaCode))).toFixed(4) + "%";
-        }
 
         div.html("<strong>"+currentMap.name+"</strong>"+"<br/><span class='mb-1'>"+ text + "</span>")
            .style("left", (d3.event.pageX+20) + "px")     
@@ -202,11 +200,13 @@ d3.queue()
       })
   .await(function(error, us, msa) {
     if (error) throw error;
-    for (type in maps) {
+
+    for (type in maps)
       maps[type].createLinearScale();
-    }
+    
     createBoundaries(us, msa);
     fillMap(currentMap);
+    currentMap.generateKey();
   });
 
    //---------------------------
