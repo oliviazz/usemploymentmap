@@ -125,6 +125,7 @@ let maps = {
 var projDict = {};
 var disruptDict = {};
 var oppDict = {};
+var employed = {};
 // var currentMap = mapTypes.DISRUPTION;
 var currentMap = maps.DISRUPTION;
 
@@ -209,10 +210,13 @@ function toggleMap(mapName) {
      d3.select("#pd").style("visibility", "");
    }
   else{
+
      d3.select("#mc").style("visibility", "");
      label.text(currentMap.name);
      d3.select("#ne").style("visibility", "hidden");
      d3.select("#pd").style("visibility", "hidden");
+     d3.select("#mc").style("visibility", "hidden");
+     d3.select("#mc").style("visibility", "hidden");
 
    }
 
@@ -235,8 +239,7 @@ function fillMap () {
 function createBoundaries(us, msa) {
   msaMap = d3.map(msa);
   var g = svg.append("g").attr("class", "msa");
-  console.log(msaMap);
-  
+  console.log(projDict);
   msaMap.each(function(countyIds, msaCode, map) {
     var selected = d3.set(countyIds);
     g.append("path")
@@ -270,11 +273,30 @@ function createBoundaries(us, msa) {
       .on("click", function(d) {
           d3.select('#jobgroup').text(currentMap.greatestSectors(parseInt(msaCode)));
           //d3.select('#percentdis').text(currentMap.greatestSectors(parseInt(msaCode)));
-           d3.select('#percentwork').text(currentMap.value(parseInt(msaCode)));
+          console.log(currentMap.name)
+          console.log((projDict[msaCode][currentMap.name])/oppDict[msaCode])
+          console.log((oppDict[msaCode]))
+          if (projDict[msaCode][currentMap.name] < 0){
+                d3.select('#percentdis').text(
+                  "Percent contribution to disruption");
+                d3.select('#contr').text(((projDict[msaCode][currentMap.name])/disruptDict[msaCode]).toFixed(4)*100);
+              }
+          else{
+                d3.select('#percentdis').text(
+                  "Percent contribution to opportunity");
+                d3.select('#contr').text(((projDict[msaCode][currentMap.name])/oppDict[msaCode]).toFixed(4)*100);
+          }
+              
+          
+
+          // d3.select('#contr').text((projDict[msaCode][currentMap.name]/ disruptDict[msaCode]).toFixed(5)*100);
+          d3.select("#numworkers").text(currentMap.value(parseInt(msaCode)));
+          d3.select('#percentwork').text((currentMap.value(parseInt(msaCode))/employed[msaCode]).toFixed(4)*100);
           d3.select("#msa").text(msaCode);
       })
   });
 }
+console.log(currentMap.name)
 
 // Main =================================================================
 
@@ -286,26 +308,31 @@ d3.queue()
       function (d) { 
         maps.OPPORTUNITY.addData(d.area, {"value" : d.opportunity, "greatest_sector" : d.greatest_sector});
         oppDict[d.area] = d.opp;
+        employed[d.area] = d.totalEmployed;
       })
   .defer(d3.csv, "../data/disruption.csv", 
       function (d) { 
         maps.DISRUPTION.addData(d.area, {"value" : d.disruption, "greatest_sector" : d.greatest_sector});
         disruptDict[d.area] = d.disrupt;
+        employed[d.area] = d.totalEmployed;
       })
   .defer(d3.csv, "../data/combined.csv",
       function (d) { 
         maps.COMBINED.addData(d.area, {"value" : d.combined, "greatest_sector" : d.greatest_sector});
       })
-   // .defer(d3.csv, "../data/proj.csv",
-   //    function (d) { 
-   //      for (job in d){
-   //        if (!(d.MSA in projDict))
-   //           projDict[d.MSA] = {};
-   //         projDict[d.MSA][job] = d.job;
+   .defer(d3.csv, "../data/proj.csv",
+      function (d) { 
+       
+        for (job in d){
+          if (!(d.MSA in projDict)){
+             projDict[d.MSA] = {};
+           }
+           projDict[d.MSA][job] = d[job];
+           // Show projectons for each job
 
-   //       }
+         }
 
-   //    })
+      })
    // .defer(d3.csv, "../data/combined.csv",
    //    function (d) { 
    //      maps.PROJ.addData(d.area, {"value" : d.combined, "greatest_sector" : d.greatest_sector});
@@ -330,12 +357,10 @@ d3.queue()
     if (error) throw error;
      
     for (type in maps){
-      console.log(type)
       if (type != "OCCUPATION")
         maps[type].createLinearScale();
       else
         for (job in maps["OCCUPATION"]) {
-          console.log(job);
           maps["OCCUPATION"][job].createLinearScale();
 
         }
@@ -347,7 +372,7 @@ d3.queue()
 
   });
 
-  console.log(projDict);
+
   console.log(disruptDict);
   console.log(oppDict);
 

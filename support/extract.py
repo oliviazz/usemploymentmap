@@ -239,9 +239,13 @@ def create_tables():
             if (msa not in projforJobs):
                 projforJobs[msa] = {}
 
-            emp_in_msa_job = jobs_by_MSA[job][msa]
+            if jobs_by_MSA[job][msa] == "**" or jobs_by_MSA[job][msa]== "*" or jobs_by_MSA[job][msa] == "***":
+                emp_in_msa_job = 0;
+            else: 
+                emp_in_msa_job = float(jobs_by_MSA[job][msa])
+            print(emp_in_msa_job)
             msa_as_key[msa][job] = emp_in_msa_job
-            projforJobs[msa][job] = emp_in_msa_job*(occupation_projections[job]);
+            projforJobs[msa][job] = (emp_in_msa_job)*float(occupation_projections[job]);
 
     for msa in disruption_index:
         opp[msa] = opportunity_index[msa]
