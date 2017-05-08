@@ -89,11 +89,6 @@ class Choropleth {
 
 // globals==================================================
 var path = d3.geoPath();
-// var disruption = d3.map();
-// var opportunity = d3.map();
-// var combined = d3.map();
-// var topjobchange = d3.map();
-
 let maps = {
   COMBINED : new Choropleth("Combined", d3.interpolateBlues),
   DISRUPTION : new Choropleth("Disruption", d3.interpolateOrRd),
@@ -101,10 +96,6 @@ let maps = {
 }
 // var currentMap = mapTypes.DISRUPTION;
 var currentMap = maps.DISRUPTION;
-
-
-
-// var totalJobs = d3.map();
 
 var svg = d3.select("svg"),
     width = +svg.attr("width"),
@@ -123,7 +114,6 @@ function toggleMap(mapName) {
   switch(mapName) {
     case "Opportunity":
         currentMap = maps.OPPORTUNITY;
-
         break;
     case "Disruption":
         currentMap = maps.DISRUPTION;
@@ -132,82 +122,18 @@ function toggleMap(mapName) {
         currentMap = maps.COMBINED;
         break;
     default:
-        currentMap = map;
         break;
   }
-
 
   var label = d3.select("h1");
   d3.select("#contributor").text(currentMap.name);
   d3.select("#jobgroup").text("");
-
-  // label.text(currentMap)
-  // console.log(currentMap)
-  // changeMap(currentMap);
-
-
-
-
-// function getValueAtMSA(msaCode, map) {
-//   console.log("getValMSA")
-//   console.log(totalJobs.get('$'+map))
-//   if (opportunity.get(parseInt(msaCode)) == undefined)
-//     return undefined;
-//   switch (map) {
-//     case mapTypes.OPPORTUNITY:
-//       return opportunity.get(parseInt(msaCode)).value;
-//     case mapTypes.DISRUPTION:
-//       return disruption.get(parseInt(msaCode)).value;
-//     case mapTypes.COMBINED:
-//       return combined.get(parseInt(msaCode)).value;
-//     default:
-
-      
-//       // return totalJobs.get(map).get(parseInt(msaCode)).value;
-//       break;
-//   }
-// }
-  var label = d3.select("h1");
   label.text(currentMap.name)
-
 
   currentMap.generateKey();
 
-
-// // Fills the msa with msaCode with a color based on the map
-// function fillColor(msaCode, map) {
-
-//   if (opportunity.get(parseInt(msaCode)) == undefined)
-//      return d3.color("#ffffff");
-  
-//   var value = getValueAtMSA(msaCode, map);
-
-//   if (map == mapTypes.OPPORTUNITY) {
-//     var x = d3.scaleLinear().domain([8.5, 17.5]).range([0, 1])
-//     return d3.interpolateYlGn(((x(value)))); 
-//   } 
-//   else if (map == mapTypes.DISRUPTION) {
-//     var x = d3.scaleLinear().domain([0, 3.5]).range([0, 1])
-//     return d3.interpolateOrRd(((x(value))));
-//   } 
-//   else if (map == mapTypes.COMBINED) {
-//     var x = d3.scaleLinear().domain([5.5, 17]).range([0, 1])
-//     return d3.interpolateBlues(((x(value))));
-//   }
-//   else{
-//     var x = d3.scaleLinear().domain([0, 500000]).range([0, 1])
-//     return d3.interpolatePRGn(((x(value))));
-
-//   }
-// }
   fillMap();
 }
-// switches the current map displayed to the one provided
-// function changeMap (map) {
-//   console.log(map)
-
-//   fillMap();
-// }
 
 // switches the current map displayed to the one provided
 function fillMap () {
@@ -249,16 +175,7 @@ function createBoundaries(us, msa) {
         div.style("visibility", "hidden")
       })
       .on("click", function(d) {
-          d3.select('#jobgroup').text(" Main Portion of Change: " + gettopjob(msaCode));
-          d3.select('#msaCode').text(" MSA: " + msaCode);
-          d3.select('#msaCode').text(" MSA: " + msaCode);
-
-          d3.select('#jobgroup').text(" Main Portion of Change: " + gettopjob(msaCode) + " [MSA: " + msaCode + "]");
-
-
-
           d3.select('#jobgroup').text(" Main Portion of Change: " + currentMap.greatestSectors(parseInt(msaCode)) + " [MSA: " + msaCode + "]");
-
       })
   });
 }
@@ -278,33 +195,9 @@ d3.queue()
         maps.DISRUPTION.addData(d.area, {"value" : d.disruption, "greatest_sector" : d.greatest_sector});
       })
   .defer(d3.csv, "../data/combined.csv",
-
-
-      function (d) {  maps.COMBINED.addData(d.area, {"value" : d.combined, "greatest_sector" : d.greatest_sector})
-                      // combined.set(d.area, d.combined);
-                     // topjobchange.set(d.area, d.greatest_sector)})
-  // .defer(d3.csv, "../data/job_employments.csv",
-  //     function (d) { 
-      
-  //        for (job in d){
-  //           if (job == "MSA") 
-  //                 myMSA = d[job]
-
-  //           if (!(totalJobs.has(job))){ 
-  //                var temp = d3.map()
-  //                totalJobs = totalJobs.set(job, temp)
-                
-  //              }
-  //         totalJobs.get(job).set(d.MSA, d[job])
-            
-  //        // console.log(totalJobs.get(job))
-  //         } 
-     
-          
-  //          })  
-        
-    
-
+      function (d) { 
+        maps.COMBINED.addData(d.area, {"value" : d.combined, "greatest_sector" : d.greatest_sector});
+      })
   .await(function(error, us, msa) {
     if (error) throw error;
 
@@ -315,13 +208,6 @@ d3.queue()
     fillMap(currentMap);
     currentMap.generateKey();
   });
-});
-
- 
-
-  //console.log(totalJobs.keys())
-   //console.log(totalJobs.entries())
- 
 
    //---------------------------
    // Append Groups for counties
