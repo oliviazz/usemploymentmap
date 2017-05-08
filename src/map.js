@@ -205,18 +205,21 @@ function toggleMap(mapName) {
   if (currentMap.name.length == 7){
      label.text("Occupation Density");
      d3.select("#contributor").text(jobCodeToText[currentMap.name] + " Job ");
-     d3.select("#mc").style("visibility", "hidden");
-     d3.select("#ne").style("visibility", "");
-     d3.select("#pd").style("visibility", "");
+     d3.select("#mc").style("display", "none");
+     d3.select("#ne").style("display", "");
+     d3.select("#pd").style("display", "");
+     d3.select("#pr").style("displayy", "");
+     d3.select("#percentdis").style("display", "");
    }
   else{
 
-     d3.select("#mc").style("visibility", "");
+     d3.select("#mc").style("display", "");
      label.text(currentMap.name);
-     d3.select("#ne").style("visibility", "hidden");
-     d3.select("#pd").style("visibility", "hidden");
-     d3.select("#mc").style("visibility", "hidden");
-     d3.select("#mc").style("visibility", "hidden");
+     d3.select("#ne").style("display", "none");
+     d3.select("#pd").style("display", "none");
+     d3.select("#pr").style("display", "none");
+     d3.select("#percentdis").style("display", "none");
+
 
    }
 
@@ -254,12 +257,19 @@ function createBoundaries(us, msa) {
         if (currentMap.value(parseInt(msaCode)) == undefined)
           text = "No Data";
         else{
-          if (currentMap.name.length != 7)
-            text = parseFloat(currentMap.value(parseInt(msaCode))).toFixed(4) + "%";
-          else{
-            text = Math.floor(currentMap.value(parseInt(msaCode)))+ " employed ";
-
+          if (currentMap.name.length == 7){
+            text = parseFloat(currentMap.value(parseInt(msaCode)))*100;
+            text = text.toFixed(4);
+          
           }
+          else{
+            text = parseFloat(currentMap.value(parseInt(msaCode)));
+            text = text.toFixed(4);
+          }
+          // else{
+          //   text = Math.floor(currentMap.value(parseInt(msaCode)))+ " employed ";
+
+          // }
         }
 
         div.html("<strong>"+currentMap.name+"</strong>"+"<br/><span class='mb-1'>"+ text + "</span>")
@@ -279,20 +289,27 @@ function createBoundaries(us, msa) {
           if (projDict[msaCode][currentMap.name] < 0){
                 d3.select('#percentdis').text(
                   "Percent contribution to disruption");
-                d3.select('#contr').text(((projDict[msaCode][currentMap.name])/disruptDict[msaCode]).toFixed(4)*100);
+                var percentContr = parseFloat(projDict[msaCode][currentMap.name]/disruptDict[msaCode])*100;
+                percentContr = percentContr.toFixed(3);
+                d3.select('#contr').text(percentContr + "%");
               }
           else{
                 d3.select('#percentdis').text(
                   "Percent contribution to opportunity");
-                d3.select('#contr').text(((projDict[msaCode][currentMap.name])/oppDict[msaCode]).toFixed(4)*100);
+                var percentContr = parseFloat(projDict[msaCode][currentMap.name]/oppDict[msaCode])*100;
+                percentContr = percentContr.toFixed(3);
+                d3.select('#contr').text(percentContr + "%");
           }
               
           
-
+          text = parseFloat(currentMap.value(parseInt(msaCode)))*100;
+          text = text.toFixed(2);
+          console.log(text);
           // d3.select('#contr').text((projDict[msaCode][currentMap.name]/ disruptDict[msaCode]).toFixed(5)*100);
-          d3.select("#numworkers").text(currentMap.value(parseInt(msaCode)));
+          d3.select("#numworkers").text(text + "%");
           d3.select('#percentwork').text((currentMap.value(parseInt(msaCode))/employed[msaCode]).toFixed(4)*100);
           d3.select("#msa").text(msaCode);
+          d3.select('#totalWorkers').text(employed[msaCode]);
       })
   });
 }
@@ -350,7 +367,7 @@ d3.queue()
                  console.log(maps.OCCUPATION[job]);
                }
 
-          maps.OCCUPATION[job].addData(d.MSA, {"value": d[job]});
+          maps.OCCUPATION[job].addData(d.MSA, {"value": d[job]/employed[d.MSA]});
         }
       })
   .await(function(error, us, msa) {
@@ -369,6 +386,7 @@ d3.queue()
     createBoundaries(us, msa);
     fillMap(currentMap);
     currentMap.generateKey();
+
 
   });
 
