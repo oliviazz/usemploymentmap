@@ -32,7 +32,39 @@
           <li><a id = "combined"  onclick="toggleMap('Combined')" href="#">Show Combined</a></li>
         </ul>
     </div>
-    <button class='btn btn-primary'> Show Jobs </button>
+    <div class="dropdown">
+      <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Show Industry Density
+      </button>
+      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+
+  <a class="dropdown-item" href="#" onclick = "toggleMap('13-0000')">Business and Financial Operations Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('15-0000')">Computer and Mathematical Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('41-0000')">Sales and Related Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('31-0000')">Healthcare Support Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('49-0000')">Installation, Maintenance, and Repair Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('25-0000')">Education, Training, and Library Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('51-0000')">Production Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('11-0000')">Management Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('21-0000')">Community and Social Service Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('19-0000')">Life, Physical, and Social Science Occupations</a>
+
+  <a class="dropdown-item" href="#" onclick = "toggleMap('29-0000')">Healthcare Practitioners and Technical Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('45-0000')">Farming, Fishing, and Forestry Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('53-0000')">Transportation and Material Moving Occupations</a>
+
+  <a class="dropdown-item" href="#" onclick = "toggleMap('17-0000')">Architecture and Engineering Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('33-0000')">Protective Service Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('39-0000')">Personal Care and Service Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('23-0000')">Legal Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('37-0000')">Building and Grounds Cleaning and Maintenance Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('27-0000')">Arts, Design, Entertainment, Sports, and Media Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('43-0000')">Office and Administrative Support Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('47-0000')">Construction and Extraction Occupations</a>
+  <a class="dropdown-item" href="#" onclick = "toggleMap('35-0000')">Food Preparation and Serving Related Occupations</a>
+
+      </div>
+    </div>
     <button class='btn btn-primary'> Show By Industry </button>
   </div>
 
@@ -45,8 +77,12 @@
 
     <div class='card col-md-4 mt-5'>
       <div class='card-block'>
-        <p> Main contributer to <span id="contributor">Disruption</span></p>
-        <p id="jobgroup"></p>
+        <p> <strong><u><span id="contributor">Disruption</span> Information </strong></u></p>
+        <p> <strong>MSA Code:</strong> <span id="msa"></span></p>
+        <p id = "mc"> <strong>Largest <span id="maptype">disruption</span> contributor: </strong><br>
+        <span id="jobgroup"></span> </p>
+        <p id = "pd"> <strong>Percent of total disruption:  <span id="percentdis"></span> </strong></p>
+        <p id = "ne"> <strong>Number employed: </strong><span id="percentwork"></span></p>
       </div>
     </div>
   </div>

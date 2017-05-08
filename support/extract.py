@@ -56,6 +56,9 @@ def create_tables():
     employment_by_MSA = {}
     # disruption by MSA code
     opportunity_index = {}
+
+    opp = {}
+    dis = {}
     # disruption by MSA code
     combined_index = {}
 
@@ -83,8 +86,7 @@ def create_tables():
 
         occupation_projections[emp_code] = percentChange
 
-        occupation_projections[code] = percentChange
-        occupation_names[code] = sheet.cell_value(i, 0)
+        occupation_names[emp_code] = sheet.cell_value(i, 0)
 
 
     # Use employment data for each MSA to create opportunity, disruption values 
@@ -138,31 +140,30 @@ def create_tables():
                 disruption_index[msa] += abs(emp_in_sector*float(occupation_projections[emp_code]))
             else:
                 opportunity_index[msa] += abs(emp_in_sector*float(occupation_projections[emp_code]))
+        # else:
+        #     combined_index[msa] = emp_in_sector*float(occupation_projections[emp_code]) 
+        #     if float(occupation_projections[emp_code]) < 0:
+        #         disruption_index[msa] = abs(emp_in_sector*float(occupation_projections[emp_code]))
+
+        #     combined_index[msa] += emp_in_sector*float(occupation_projections[code]) 
+        #     if  emp_in_sector*float(occupation_projections[code]) > emp_in_sector*float(occupation_projections[topjobchange["Combined"][msa]]):
+        #         topjobchange["Combined"][msa] = code
+
+        #     if float(occupation_projections[code]) < 0:
+        #         disruption_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
+        #         if emp_in_sector*float(occupation_projections[code]) < emp_in_sector*float(occupation_projections[topjobchange["Disruption"][msa]]):
+        #             topjobchange["Disruption"][msa] = code
+        #     else:
+        #         opportunity_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
+        #         if emp_in_sector*float(occupation_projections[code]) > emp_in_sector*float(occupation_projections[topjobchange["Opportunity"][msa]]):
+        #             topjobchange["Opportunity"][msa] = code
         else:
             combined_index[msa] = emp_in_sector*float(occupation_projections[emp_code]) 
+            topjobchange["Combined"][msa] = emp_code
+            topjobchange["Disruption"][msa] = emp_code
+            topjobchange["Opportunity"][msa] = emp_code
             if float(occupation_projections[emp_code]) < 0:
                 disruption_index[msa] = abs(emp_in_sector*float(occupation_projections[emp_code]))
-
-            combined_index[msa] += emp_in_sector*float(occupation_projections[code]) 
-            if  emp_in_sector*float(occupation_projections[code]) > emp_in_sector*float(occupation_projections[topjobchange["Combined"][msa]]):
-                topjobchange["Combined"][msa] = code
-
-            if float(occupation_projections[code]) < 0:
-                disruption_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
-                if emp_in_sector*float(occupation_projections[code]) < emp_in_sector*float(occupation_projections[topjobchange["Disruption"][msa]]):
-                    topjobchange["Disruption"][msa] = code
-            else:
-                opportunity_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
-                if emp_in_sector*float(occupation_projections[code]) > emp_in_sector*float(occupation_projections[topjobchange["Opportunity"][msa]]):
-                    topjobchange["Opportunity"][msa] = code
-        else:
-            combined_index[msa] = emp_in_sector*float(occupation_projections[code]) 
-            topjobchange["Combined"][msa] = code
-            topjobchange["Disruption"][msa] = code
-            topjobchange["Opportunity"][msa] = code
-            if float(occupation_projections[code]) < 0:
-                disruption_index[msa] = abs(emp_in_sector*float(occupation_projections[code]))
-
                 opportunity_index[msa] = 0
             else:
                 opportunity_index[msa] = abs(emp_in_sector*float(occupation_projections[emp_code]))
@@ -203,26 +204,26 @@ def create_tables():
 
         if msa in disruption_index:
 
-            combined_index[msa] += emp_in_sector*float(occupation_projections[code]) 
-            if  emp_in_sector*float(occupation_projections[code]) > emp_in_sector*float(occupation_projections[topjobchange["Combined"][msa]]):
-                topjobchange["Combined"][msa] = code
+            combined_index[msa] += emp_in_sector*float(occupation_projections[emp_code]) 
+            if  emp_in_sector*float(occupation_projections[emp_code]) > emp_in_sector*float(occupation_projections[topjobchange["Combined"][msa]]):
+                topjobchange["Combined"][msa] = emp_code
 
-            if float(occupation_projections[code]) < 0:
-                disruption_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
-                if emp_in_sector*float(occupation_projections[code]) < emp_in_sector*float(occupation_projections[topjobchange["Disruption"][msa]]):
-                    topjobchange["Disruption"][msa] = code
+            if float(occupation_projections[emp_code]) < 0:
+                disruption_index[msa] += abs(emp_in_sector*float(occupation_projections[emp_code]))
+                if emp_in_sector*float(occupation_projections[emp_code]) < emp_in_sector*float(occupation_projections[topjobchange["Disruption"][msa]]):
+                    topjobchange["Disruption"][msa] = emp_code
             else:
-                opportunity_index[msa] += abs(emp_in_sector*float(occupation_projections[code]))
-                if emp_in_sector*float(occupation_projections[code]) > emp_in_sector*float(occupation_projections[topjobchange["Opportunity"][msa]]):
-                    topjobchange["Opportunity"][msa] = code
+                opportunity_index[msa] += abs(emp_in_sector*float(occupation_projections[emp_code]))
+                if emp_in_sector*float(occupation_projections[emp_code]) > emp_in_sector*float(occupation_projections[topjobchange["Opportunity"][msa]]):
+                    topjobchange["Opportunity"][msa] = emp_code
 
         else:
-            combined_index[msa] = emp_in_sector*float(occupation_projections[code]) 
-            topjobchange["Combined"][msa] = code
-            topjobchange["Disruption"][msa] = code
-            topjobchange["Opportunity"][msa] = code
-            if float(occupation_projections[code]) < 0:
-                disruption_index[msa] = abs(emp_in_sector*float(occupation_projections[code]))
+            combined_index[msa] = emp_in_sector*float(occupation_projections[emp_code]) 
+            topjobchange["Combined"][msa] = emp_code
+            topjobchange["Disruption"][msa] = emp_code
+            topjobchange["Opportunity"][msa] = emp_code
+            if float(occupation_projections[emp_code]) < 0:
+                disruption_index[msa] = abs(emp_in_sector*float(occupation_projections[emp_code]))
                 opportunity_index[msa] = 0
             else:
                 opportunity_index[msa] = abs(emp_in_sector*float(occupation_projections[emp_code]))
@@ -230,28 +231,44 @@ def create_tables():
 
     msa_as_key = {}
     # Now, make the msas the keys for easier iteration
-
+    projforJobs = {}
     for job in jobs_by_MSA:
         for msa in jobs_by_MSA[job]:
             if (msa not in msa_as_key):
                 msa_as_key[msa] = {}
+            if (msa not in projforJobs):
+                projforJobs[msa] = {}
 
             emp_in_msa_job = jobs_by_MSA[job][msa]
             msa_as_key[msa][job] = emp_in_msa_job
+            projforJobs[msa][job] = emp_in_msa_job*(occupation_projections[job]);
 
     for msa in disruption_index:
+        opp[msa] = opportunity_index[msa]
+        dis[msa] = disruption_index[msa]
         disruption_index[msa] /= employment_by_MSA[msa]
         opportunity_index[msa] /= employment_by_MSA[msa]
         combined_index[msa] /= employment_by_MSA[msa]
 
 
+
+
     with open('../data/job_employments.csv', 'w') as outfile:
-        writer = csv.DictWriter(outfile, fieldnames = (["MSA"] + jobs_by_MSA.keys()))  
+        writer = csv.DictWriter(outfile, fieldnames = (["MSA"] + jobs_by_MSA.keys() + ["proj"]))  
         writer.writeheader()
 
         for msa in msa_as_key:
             jobs = msa_as_key[msa]
+            projection = employment_by_MSA[msa]*float(occupation_projections[emp_code]) 
             writer.writerow(dict({"MSA":msa}, **jobs))
+
+    with open('../data/proj.csv', 'w') as outfile:
+         writer = csv.DictWriter(outfile, fieldnames = (["MSA"] + jobs_by_MSA.keys()))  
+         writer.writeheader()
+
+         for msa in msa_as_key:
+            msaProj = projforJobs[msa];
+            writer.writerow(dict({"MSA":msa}, **msaProj))
          
 # Commented out because these are already created! 
 
@@ -277,16 +294,18 @@ def create_tables():
     #             writer.writerow({'area' : area, 'combined' : combined_index[area], 'greatest_sector' : topjobchange[area][1]})
 
     with open('../data/disruption.csv', 'w') as outfile:
-        writer = csv.DictWriter(outfile, fieldnames=['area','disruption', 'greatest_sector'])  
+        writer = csv.DictWriter(outfile, fieldnames=['area','disruption', 'greatest_sector', 'totaldisrupt', 'dis', 'totalEmployed'])  
         writer.writeheader()
         for area in disruption_index:
-            writer.writerow({'area' : area, 'disruption' : disruption_index[area], 'greatest_sector' : occupation_names[topjobchange['Disruption'][area]]})
+            writer.writerow({'area' : area, 'disruption' : disruption_index[area], 'greatest_sector' : occupation_names[topjobchange['Disruption'][area]],
+                'dis': dis[area], 'totalEmployed': employment_by_MSA[area]})
 
     with open('../data/opportunity.csv', 'w') as outfile:
-        writer = csv.DictWriter(outfile, fieldnames=['area','opportunity', 'greatest_sector'])  
+        writer = csv.DictWriter(outfile, fieldnames=['area','opportunity', 'greatest_sector', 'opp','totalEmployed'])  
         writer.writeheader()
         for area in disruption_index:
-            writer.writerow({'area' : area, 'opportunity' : opportunity_index[area], 'greatest_sector' : occupation_names[topjobchange['Opportunity'][area]]})
+            writer.writerow({'area' : area, 'opportunity' : opportunity_index[area], 'greatest_sector' : occupation_names[topjobchange['Opportunity'][area]],
+                'opp': opp[area], 'totalEmployed': employment_by_MSA[area]})
 
     with open('../data/combined.csv', 'w') as outfile:
         writer = csv.DictWriter(outfile, fieldnames=['area','combined', 'greatest_sector'])  
