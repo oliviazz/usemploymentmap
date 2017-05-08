@@ -23,8 +23,8 @@ var combined = d3.map();
 var topjobchange = d3.map();
 var currentMap = mapTypes.DISRUPTION;
 
-var allJobs =  d3.map();
-var totalJobs = []
+
+var totalJobs = d3.map();
 
 var svg = d3.select("svg"),
     width = +svg.attr("width"),
@@ -123,8 +123,15 @@ var div = d3.select("body").append("div")
 
 function toggleMap(map) {
 
+   // if (map != "Opportunity" && map != "Disruption" && map != "Combined" ) {
+   //  console.log(map)
+   //  console.log(totalJobs)
+    
+   // }
+   // else { 
   switch(map) {
     case "Opportunity":
+
         currentMap = mapTypes.OPPORTUNITY;
         break;
     case "Disruption":
@@ -134,52 +141,86 @@ function toggleMap(map) {
         currentMap = mapTypes.COMBINED;
         break;
     default:
+        currentMap = map;
         break;
   }
+
+
   var label = d3.select("h1");
+  d3.select("#contributor").text(currentMap);
+  d3.select("#jobgroup").text("");
   label.text(currentMap)
+  console.log(currentMap)
   changeMap(currentMap);
 }
 
-function getValueAtMSA(msaCode) {
-  switch (currentMap) {
+
+
+function getValueAtMSA(msaCode, map) {
+  console.log("getValMSA")
+  console.log(totalJobs.get('$'+map))
+  if (opportunity.get(parseInt(msaCode)) == undefined)
+    return undefined;
+  switch (map) {
     case mapTypes.OPPORTUNITY:
-      return opportunity.get(parseInt(msaCode));
-      break;
+      return opportunity.get(parseInt(msaCode)).value;
     case mapTypes.DISRUPTION:
-      return disruption.get(parseInt(msaCode));
-      break;
+      return disruption.get(parseInt(msaCode)).value;
     case mapTypes.COMBINED:
-      return combined.get(parseInt(msaCode));
-      break;
+      return combined.get(parseInt(msaCode)).value;
     default:
+
+      
+      // return totalJobs.get(map).get(parseInt(msaCode)).value;
       break;
   }
 }
 
 function gettopjob(msaCode) {
-    return topjobchange.get(parseInt(msaCode));
+  if (opportunity.get(parseInt(msaCode)) == undefined)
+    return undefined;
+  switch (currentMap) {
+    case mapTypes.OPPORTUNITY:
+      return opportunity.get(parseInt(msaCode)).greatest_sector;
+    case mapTypes.DISRUPTION:
+      return disruption.get(parseInt(msaCode)).greatest_sector;
+    case mapTypes.COMBINED:
+      return combined.get(parseInt(msaCode)).greatest_sector;
+    default:
+      break;
+  }
 }
 
 // Fills the msa with msaCode with a color based on the map
 function fillColor(msaCode, map) {
+
   if (opportunity.get(parseInt(msaCode)) == undefined)
-     return d3.color("#aaaaaa");
+     return d3.color("#ffffff");
+  
+  var value = getValueAtMSA(msaCode, map);
 
   if (map == mapTypes.OPPORTUNITY) {
     var x = d3.scaleLinear().domain([8.5, 17.5]).range([0, 1])
-    return d3.interpolateYlGn(((x(opportunity.get(parseInt(msaCode)))))); 
-  } else if (map == mapTypes.DISRUPTION) {
+    return d3.interpolateYlGn(((x(value)))); 
+  } 
+  else if (map == mapTypes.DISRUPTION) {
     var x = d3.scaleLinear().domain([0, 3.5]).range([0, 1])
-    return d3.interpolateOrRd((x(disruption.get(parseInt(msaCode))))); 
-  } else if (map == mapTypes.COMBINED) {
+    return d3.interpolateOrRd(((x(value))));
+  } 
+  else if (map == mapTypes.COMBINED) {
     var x = d3.scaleLinear().domain([5.5, 17]).range([0, 1])
-    return d3.interpolateBlues((x(combined.get(parseInt(msaCode))))); 
+    return d3.interpolateBlues(((x(value))));
+  }
+  else{
+    var x = d3.scaleLinear().domain([0, 500000]).range([0, 1])
+    return d3.interpolatePRGn(((x(value))));
+
   }
 }
 
 // switches the current map displayed to the one provided
 function changeMap (map) {
+  console.log(map)
   var g = svg.select(".msa");
   g.selectAll("path").attr("fill",
     function() {
@@ -203,7 +244,13 @@ function createBoundaries(us, msa) {
       .attr("class", "msa-boundary")
       .attr("d", path)
       .on("mouseover", function(d) {
-        div.html("<strong>"+currentMap+"</strong>"+"<br/>"+getValueAtMSA(msaCode)+ "<br/>")
+        var text;
+        if (getValueAtMSA(msaCode) == undefined) {
+          text = "No data";
+        } else {
+          text = parseFloat(getValueAtMSA(msaCode)).toFixed(4) + "%";
+        }
+        div.html("<strong>"+currentMap+"</strong>"+"<br/><span class='mb-1'>"+ text + "</span>")
            .style("left", (d3.event.pageX+20) + "px")     
            .style("top", (d3.event.pageY - 28) + "px")
            .style("visibility", "visible");
@@ -216,6 +263,9 @@ function createBoundaries(us, msa) {
           d3.select('#msaCode').text(" MSA: " + msaCode);
           d3.select('#msaCode').text(" MSA: " + msaCode);
 
+          d3.select('#jobgroup').text(" Main Portion of Change: " + gettopjob(msaCode) + " [MSA: " + msaCode + "]");
+
+
       })
   });
 }
@@ -227,31 +277,44 @@ d3.queue()
   .defer(d3.json, "https://d3js.org/us-10m.v1.json")
   .defer(d3.json, "../data/us_msa.json")
   .defer(d3.csv, "../data/opportunity.csv", 
-      function (d) { opportunity.set(d.area, d.opportunity);})
+      function (d) { opportunity.set(d.area, {"value" : d.opportunity, "greatest_sector" : d.greatest_sector});})
   .defer(d3.csv, "../data/disruption.csv", 
-      function (d) { disruption.set(d.area, d.disruption);})
+      function (d) { disruption.set(d.area, {"value" : d.disruption, "greatest_sector" : d.greatest_sector});})
   .defer(d3.csv, "../data/combined.csv",
+
       function (d) { combined.set(d.area, d.combined);
                       topjobchange.set(d.area, d.greatest_sector)})
   .defer(d3.csv, "../data/job_employments.csv",
       function (d) { 
-           console.log(d);
+      
+         for (job in d){
+            if (job == "MSA") 
+                  myMSA = d[job]
 
-           allJobs.set(d.MSA, d.combined);
-         })
+            if (!(totalJobs.has(job))){ 
+                 var temp = d3.map()
+                 totalJobs = totalJobs.set(job, temp)
+                
+               }
+          totalJobs.get(job).set(d.MSA, d[job])
+            
+         // console.log(totalJobs.get(job))
+          } 
+     
+          
+           })  
+        
   .await(function(error, us, msa) {
     if (error) throw error;
     createBoundaries(us, msa);
     changeMap(currentMap);
   });
+
  
- for (msa in combined.set()){
-  
-  console.log(msa)
-  
-}
 
-
+   console.log(disruption.keys())
+  //console.log(totalJobs.keys())
+   //console.log(totalJobs.entries())
  
 
    //---------------------------
