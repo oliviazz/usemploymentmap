@@ -22,7 +22,8 @@ index counties by FIPS emp_code (FIPS state emp_code plus county emp_code) and m
 and map it to MSA emp_code   
 
 """
-import csv, json, xlrd
+import csv, json, xlrd,  os.path 
+
 
 """
 creates a json file that maps MSA emp_codes to counties
@@ -81,17 +82,15 @@ def create_tables():
 
     # occupation projections tracks the projections for each employment code 
     # occupation_names provides the corresponding name given a code 
-
+    assert os.path.isfile('occupation.xlsx')
 ###############################################################################
     book = xlrd.open_workbook("occupation.XLSX")
     sheet = book.sheet_by_index(2)
 
     """ record percentage change for each employment emp_code """
     for i in range(4, sheet.nrows):
-
-        occupation_names[emp_code] = sheet.cell_value(i, 0) 
-        
         emp_code = sheet.cell_value(i, 1)
+        occupation_names[emp_code] = sheet.cell_value(i, 0) 
         percentChange = sheet.cell_value(i, 8)
         occupation_projections[emp_code] = percentChange
 
@@ -113,11 +112,9 @@ def create_tables():
 
         if cur_employment_code not in occupation_projections:
             continue
-
         if cur_employment_code == "00-0000" and msa not in employment_in_MSA:
             employment_in_MSA[msa] = float(emp_in_sector)
             continue
-
         if emp_in_sector == "**" or emp_in_sector == "*" or emp_in_sector == "***":
             emp_in_sector = 0
         
@@ -127,11 +124,11 @@ def create_tables():
             if not cur_employment_code in jobs_by_MSA: #if that job hasn't been added yet  
                 jobs_by_MSA[cur_employment_code] = {};
 
+            # this is a dictionary for a given job
             job_employment_by_msa = jobs_by_MSA[cur_employment_code]; 
 
-            if (not msa in job_employment_by_msa):
+            if not msa in job_employment_by_msa:
                 job_employment_by_msa[msa] = emp_in_sector;  
-
 
 
         if msa not in disruption_index:
@@ -149,23 +146,18 @@ def create_tables():
         combined_index[msa] += abs(proj_job_change)
 
         kinds_of_maps = {"Disruption", "Opportunity", "Combined"}
+         
+        for kind in kinds_of_maps: 
+            if not msa in topjobchange[kind] and is_major_emp:
+                    topjobchange[kind][msa] = cur_employment_code
+            elif msa in topjobchange[kind]:
+                standing_top_job = topjobchange[kind][msa]
+                proj = occupation_projections[standing_top_job]
+                standing_top_effect = proj*jobs_by_MSA[standing_top_job][msa]
 
-        if (not msa in topjobchange["Disruption"]):
-            for kind in types_of_maps: 
-                topjobchange[kind][msa] = cur_employment_code
-        
-            # @ to do: rewrite this so tobjobchange["dsirtupion"] actually accesses the projected loss 
-            # probably do occupation projections, * 
-        else:
-            # iterate through each of the stadning values for topjobchange
-            # compare to the current porjections 
-            # update if needed
-        standing_top_code = topjobchange["Disruption"][msa]
-        standing_top_loss = occupation_projections[standing_top_code]*jobs_by_MSA[standing_top_code][msa]
-
-        if msa in topjobchange["Disruption"] and proj_job_change < 0 and proj_job_change < standing_top_loss
-            topjobchange['Disruption'][msa] = cur_employment_code
-
+                if abs(proj_job_change) > abs(standing_top_effect):
+                    topjobchange[kind][msa] = cur_employment_code
+    
      
 ##########################################################################################################
     # Do the same for non-metropolitan areas 
@@ -305,10 +297,14 @@ def create_tables():
                         'totaldisrupt', 'dis', 'totalEmployed'])  
         writer.writeheader()
         for area in disruption_index:
+           
+            topjob = topjobchange['Disruption'][area]
+            topjobname = occupation_names[topjob]
+
             writer.writerow({
                 'area' : area,
                 'disruption' : disruption_index[area],
-                'greatest_sector' : occupation_names[topjobchange['Disruption'][area]],
+                'greatest_sector' : topjobname,
                 'dis': dis[area], 
                 'totalEmployed': employment_by_MSA[area]
             })
