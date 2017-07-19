@@ -4,7 +4,8 @@
     "description": "A map of future disruption in the U.S",
     "main": "index.php",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node index.php"
     },
     "repository": {
         "type": "git",
@@ -18,9 +19,6 @@
     "homepage": "https://github.com/manninglucas/disruption-map#readme",
     "dependencies": {
         "react-d3-map-choropleth": "^0.5.1"
-    },
-    "scripts": {
-        "start": "node index.php"
     },
 
     "require": {
