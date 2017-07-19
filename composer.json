@@ -19,15 +19,15 @@
     "homepage": "https://github.com/manninglucas/disruption-map#readme",
     "dependencies": {
         "react-d3-map-choropleth": "^0.5.1"
-    },
-
-    "require": {
-        "silex/silex": "^2.0.4",
-        "monolog/monolog": "^1.22",
-        "twig/twig": "^2.0",
-        "symfony/twig-bridge": "^3"
-    },
-    "require-dev": {
-        "heroku/heroku-buildpack-php": "*"
     }
+
+    // "require": {
+    //     "silex/silex": "^2.0.4",
+    //     "monolog/monolog": "^1.22",
+    //     "twig/twig": "^2.0",
+    //     "symfony/twig-bridge": "^3"
+    // },
+    // "require-dev": {
+    //     "heroku/heroku-buildpack-php": "*"
+    // }
 }
