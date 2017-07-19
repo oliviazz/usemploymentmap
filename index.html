@@ -1,106 +1,109 @@
 <html>
+
 <head>
-  <title> Future U.S disruption </title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-  <link rel="stylesheet" href="./src/css/style.css">
- 	<script src="https://d3js.org/d3.v4.min.js"></script>
-  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-  <script src="https://d3js.org/topojson.v2.min.js"></script>
+    <title> Future U.S disruption </title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="./src/css/style.css">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/topojson.v2.min.js"></script>
 </head>
 
 <body>
-<!-- Please keep HTML organized/clean -->
-<!-- 2 spaces per tab. Any tags within tags should be indented
+    <!-- Please keep HTML organized/clean -->
+    <!-- 2 spaces per tab. Any tags within tags should be indented
      for attributes, the order is class, id, other -->
-<!-- Use a special separator div to create separation lines -->
-<!-- Use grid row/column organization to maintain grid -->
-<div class="container" id="content">
-  <div class='row justify-content-md-center align-items-center'>
-    <h1 class='display-1' id='title'>Disruption</h1>
-  </div>
+    <!-- Use a special separator div to create separation lines -->
+    <!-- Use grid row/column organization to maintain grid -->
+    <div class="container" id="content">
+        <div class='row justify-content-md-center align-items-center'>
+            <h1 class='display-1' id='title'>Disruption</h1>
+        </div>
 
-  <div class='separator mx-auto mt-3 mb-3'></div>
+        <div class='separator mx-auto mt-3 mb-3'></div>
 
-  <div class='row justify-content-md-center'> 
-    <div class="btn-group">
-      <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <div class='row justify-content-md-center'>
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       Change Map View <span class="caret"></span>
       </button>
-        <ul class="dropdown-menu">
-          <li><a id = "opportunity"  onclick="toggleMap('Opportunity')" href="#">Show Opportunity</a></li>
-          <li><a id = "disruption" onclick="toggleMap('Disruption')" href="#">Show Disruption</a></li>
-          <li><a id = "combined"  onclick="toggleMap('Combined')" href="#">Show Combined</a></li>
-        </ul>
-    </div>
-    <div class="dropdown">
-      <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <ul class="dropdown-menu">
+                    <li><a id="opportunity" onclick="toggleMap('Opportunity')" href="#">Show Opportunity</a></li>
+                    <li><a id="disruption" onclick="toggleMap('Disruption')" href="#">Show Disruption</a></li>
+                    <li><a id="combined" onclick="toggleMap('Combined')" href="#">Show Combined</a></li>
+                </ul>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       Show Industry Density
       </button>
-      <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 
-  <a class="dropdown-item" href="#" onclick = "toggleMap('13-0000')">Business and Financial Operations Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('15-0000')">Computer and Mathematical Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('41-0000')">Sales and Related Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('31-0000')">Healthcare Support Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('49-0000')">Installation, Maintenance, and Repair Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('25-0000')">Education, Training, and Library Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('51-0000')">Production Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('11-0000')">Management Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('21-0000')">Community and Social Service Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('19-0000')">Life, Physical, and Social Science Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('13-0000')">Business and Financial Operations Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('15-0000')">Computer and Mathematical Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('41-0000')">Sales and Related Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('31-0000')">Healthcare Support Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('49-0000')">Installation, Maintenance, and Repair Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('25-0000')">Education, Training, and Library Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('51-0000')">Production Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('11-0000')">Management Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('21-0000')">Community and Social Service Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('19-0000')">Life, Physical, and Social Science Occupations</a>
 
-  <a class="dropdown-item" href="#" onclick = "toggleMap('29-0000')">Healthcare Practitioners and Technical Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('45-0000')">Farming, Fishing, and Forestry Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('53-0000')">Transportation and Material Moving Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('29-0000')">Healthcare Practitioners and Technical Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('45-0000')">Farming, Fishing, and Forestry Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('53-0000')">Transportation and Material Moving Occupations</a>
 
-  <a class="dropdown-item" href="#" onclick = "toggleMap('17-0000')">Architecture and Engineering Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('33-0000')">Protective Service Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('39-0000')">Personal Care and Service Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('23-0000')">Legal Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('37-0000')">Building and Grounds Cleaning and Maintenance Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('27-0000')">Arts, Design, Entertainment, Sports, and Media Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('43-0000')">Office and Administrative Support Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('47-0000')">Construction and Extraction Occupations</a>
-  <a class="dropdown-item" href="#" onclick = "toggleMap('35-0000')">Food Preparation and Serving Related Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('17-0000')">Architecture and Engineering Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('33-0000')">Protective Service Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('39-0000')">Personal Care and Service Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('23-0000')">Legal Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('37-0000')">Building and Grounds Cleaning and Maintenance Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('27-0000')">Arts, Design, Entertainment, Sports, and Media Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('43-0000')">Office and Administrative Support Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('47-0000')">Construction and Extraction Occupations</a>
+                    <a class="dropdown-item" href="#" onclick="toggleMap('35-0000')">Food Preparation and Serving Related Occupations</a>
 
-      </div>
+                </div>
+            </div>
+            <button class='btn btn-primary'> Show By Industry </button>
+        </div>
+
+        <div class="separator mx-auto mt-3 mb-3"></div>
+
+        <div class='row align-items-start'>
+            <div class='col-md-8'>
+                <svg width="100%" height="75%" viewBox="0 0 960 600" preserveAspectRatio="XMidYMid meet"></svg>
+            </div>
+
+            <div class='card col-md-4 mt-5'>
+                <div class='card-block'>
+                    <p> <strong><u><span id="contributor">Disruption</span> Information </strong></u>
+                    </p>
+                    <p> <strong>MSA Code:</strong> <span id="msa"></span></p>
+                    <p id="mc"> <strong>Largest <span id="maptype">disruption</span> contributor: </strong><br>
+                        <span id="jobgroup"></span> </p>
+
+                    <!--<p id = "ne"> <strong>Percentage of labor force: </strong><span id="numworkers"></span></p>-->
+                    <strong><span id="percentdis"></span> </strong>
+                    <p id="pd"> <span id="contr"></span> </p>
+                    <strong><p > Total Workforce: </strong><span id="totalWorkers"></span> </p>
+                    <!--  <p id = "pr"> <strong>Percentage in region: </strong><span id="percentwork"></span></p> -->
+                </div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="row justify-content-start">
+                <div class="text-muted">Lucas Manning and Olivia Zhang // FRS 178, 2017</div>
+            </div>
+        </footer>
     </div>
-    <button class='btn btn-primary'> Show By Industry </button>
-  </div>
 
-  <div class="separator mx-auto mt-3 mb-3"></div>
-
-  <div class='row align-items-start'>
-    <div class='col-md-8'>
-    	<svg width="100%" height="75%" viewBox="0 0 960 600" preserveAspectRatio="XMidYMid meet"></svg>
-    </div>
-
-    <div class='card col-md-4 mt-5'>
-      <div class='card-block'>
-        <p> <strong><u><span id="contributor">Disruption</span> Information </strong></u></p>
-        <p> <strong>MSA Code:</strong> <span id="msa"></span></p>
-        <p id = "mc"> <strong>Largest <span id="maptype">disruption</span> contributor: </strong><br>
-        <span id="jobgroup"></span> </p>
-       
-        <p id = "ne"> <strong>Percentage of labor force: </strong><span id="numworkers"></span></p>
-        <strong><span id="percentdis"></span> </strong>
-        <p id = "pd"> <span id="contr"></span> </p>
-        <strong><p > Total Workforce: </strong><span id = "totalWorkers"></span> </p>
-       <!--  <p id = "pr"> <strong>Percentage in region: </strong><span id="percentwork"></span></p> -->
-      </div>
-    </div>
-  </div>
-
-  <footer class="footer">
-    <div class="row justify-content-start">
-      <div class="text-muted">Lucas Manning and Olivia Zhang // FRS 178, 2017</div>
-    </div>
-  </footer>
-</div>
-
-<script src="./src/map.js"></script>
-<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <script src="./src/map.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 </body>
+
 </html>
